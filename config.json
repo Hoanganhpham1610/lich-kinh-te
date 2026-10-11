@@ -36,6 +36,9 @@
     "Prelim UoM Consumer Sentiment"
   ],
 
+  "ai": { "enabled": true, "model": "claude-opus-5-5", "effort": "medium" },
+  "gold": { "enabled": true, "followup_minutes": 30 },
+
   "telegram": {
     "weekly": { "enabled": true, "weekday": 0, "hour": 7, "min_level": 2 },
     "daily": { "enabled": true, "hour": 7, "min_level": 2 },

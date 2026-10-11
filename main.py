@@ -16,7 +16,7 @@ from itertools import groupby
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from econcal import messages
+from econcal import analysis, gold, messages
 from econcal.fetch import fetch_week
 from econcal.rules import classify
 from econcal.telegram import send
@@ -146,16 +146,47 @@ def tick(dry_run: bool = False, now: datetime | None = None) -> None:
             for e in group:
                 mark(f'remind:{e["key"]}')
 
-    # 4) Kết quả actual
+    # Giá vàng: chỉ ghi lại quanh giờ tin mạnh (30' trước → 60' sau) để không commit thừa
+    g = cfg.get("gold", {})
+    snaps = state.setdefault("gold", [])
+    price_now = None
+    if g.get("enabled"):
+        near = pick(events, now - timedelta(minutes=60), now + timedelta(minutes=30), tg["actual"]["min_level"])
+        if near or state.get("followups"):
+            price_now = gold.spot()
+            if price_now is not None:
+                snaps.append([int(now.timestamp()), price_now])
+        state["gold"] = [s for s in snaps if s[0] > now.timestamp() - 6 * 3600]
+        snaps = state["gold"]
+
+    # 4) Kết quả actual (+ giá vàng + phân tích AI)
     a = tg["actual"]
     if a["enabled"]:
         released = [e for e in pick(events, now - timedelta(minutes=a["max_minutes_after"]), now, a["min_level"])
                     if e["actual"] and f'actual:{e["key"]}' not in sent]
         for ts, group in groupby(released, key=lambda e: e["ts"]):
             group = list(group)
-            send(messages.actual(group, tz, cfg), dry_run)
+            rx = gold.reaction(snaps, ts, int(now.timestamp()), price_now) if price_now else None
+            context = [e for e in pick(events, now - timedelta(days=3), now + timedelta(days=4), 3)
+                       if e["ts"] != ts][:12]
+            note = analysis.analyze(group, context, rx, tz, cfg)
+            ids = send(messages.actual(group, tz, cfg, rx, note), dry_run)
             for e in group:
                 mark(f'actual:{e["key"]}')
+            if g.get("enabled") and g.get("followup_minutes"):
+                state.setdefault("followups", {})[str(ts)] = {"msg": ids[0], "keys": [e["key"] for e in group]}
+
+    # 5) Cập nhật giá vàng N phút sau tin (trả lời vào tin kết quả)
+    for ts_s, fu in list(state.get("followups", {}).items()):
+        ts = int(ts_s)
+        age = now.timestamp() - ts
+        if age < g.get("followup_minutes", 30) * 60:
+            continue
+        group = [e for e in events if e["key"] in fu["keys"]]
+        rx = gold.reaction(snaps, ts, int(now.timestamp()), price_now) if price_now else None
+        if group and rx and age < 3 * 3600:
+            send(messages.followup(group, tz, rx), dry_run, reply_to=fu["msg"])
+        del state["followups"][ts_s]
 
     if not dry_run:
         save_state(state)

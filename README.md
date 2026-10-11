@@ -9,7 +9,8 @@ Tự động lấy lịch tin kinh tế từ ForexFactory, chấm mức quan tr�
   | 🗓 Tổng hợp tuần | Thứ Hai 07:00 |
   | ☀️ Lịch trong ngày | 07:00 thứ Hai–Sáu (gồm cả tin đêm như FOMC 01:00) |
   | ⏰ Nhắc trước | 30 phút trước tin 🔴/🔥 |
-  | 📊 Kết quả actual | Ngay khi ForexFactory cập nhật số thực tế |
+  | 📊 Kết quả actual | Ngay khi ForexFactory cập nhật số thực tế, kèm **giá vàng trước/sau tin** và **phân tích tác động lên vàng bằng AI (Claude)** |
+| ⏱ Cập nhật vàng | 30 phút sau tin (trả lời vào tin kết quả) |
 
 ## Mức quan trọng
 
@@ -47,6 +48,7 @@ $env:TELEGRAM_BOT_TOKEN="123:ABC..."; $env:TELEGRAM_CHAT_ID="@ten_kenh"; python 
 3. **Settings → Secrets and variables → Actions → New repository secret**:
    - `TELEGRAM_BOT_TOKEN`
    - `TELEGRAM_CHAT_ID`
+   - `ANTHROPIC_API_KEY` *(tuỳ chọn — bật phân tích AI; tạo ở console.anthropic.com. Không có thì bot dùng nhận định theo quy tắc)*
    - `FIRECRAWL_API_KEY` *(tuỳ chọn — dự phòng khi ForexFactory chặn máy chủ GitHub)*
 4. **Settings → Pages** → Source: *Deploy from a branch* → `main` / `/docs` → Save.
    Dashboard sẽ ở `https://<user>.github.io/<repo>/` — ghim link này lên kênh.
@@ -58,6 +60,12 @@ $env:TELEGRAM_BOT_TOKEN="123:ABC..."; $env:TELEGRAM_CHAT_ID="@ten_kenh"; python 
 python main.py preview weekly     # xem trước tin tổng hợp tuần (weekly|daily|remind|actual)
 python main.py tick --dry-run     # chạy 1 vòng nhưng chỉ in ra, không gửi
 ```
+
+## Phân tích vàng
+
+- Giá vàng: **XAU/USD giao ngay** từ gold-api.com (miễn phí). Bot ghi giá ở mỗi vòng chạy trong khoảng 30' trước → 60' sau tin mạnh, nên "giá trước tin" là lần ghi gần nhất trước giờ ra tin (thường cách 0–10 phút).
+- AI: model, mức effort cấu hình ở mục `ai` trong `config.json`; tắt bằng `"enabled": false`. Lỗi AI → tự dùng nhận định theo quy tắc.
+- Mỗi tin phân tích có dòng *"Nhận định tham khảo, không phải khuyến nghị đầu tư"*.
 
 ## Lưu ý
 

@@ -19,19 +19,24 @@ def _split(text: str) -> list[str]:
     return parts
 
 
-def send(text: str, dry_run: bool = False) -> None:
+def send(text: str, dry_run: bool = False, reply_to: int | None = None) -> list[int]:
+    """Gửi tin (tự cắt nếu dài), trả về danh sách message_id."""
     if dry_run:
-        print("=" * 60 + "\n" + text + "\n")
-        return
+        print("=" * 60 + (f" (trả lời tin {reply_to})" if reply_to else "") + "\n" + text + "\n")
+        return [0]
+    ids = []
     token = os.environ["TELEGRAM_BOT_TOKEN"]
     chat_id = os.environ["TELEGRAM_CHAT_ID"]
     for part in _split(text):
-        body = json.dumps({
+        payload = {
             "chat_id": chat_id,
             "text": part,
             "parse_mode": "HTML",
             "disable_web_page_preview": True,
-        }).encode()
+        }
+        if reply_to:
+            payload["reply_parameters"] = {"message_id": reply_to, "allow_sending_without_reply": True}
+        body = json.dumps(payload).encode()
         req = urllib.request.Request(
             f"https://api.telegram.org/bot{token}/sendMessage",
             data=body,
@@ -41,3 +46,5 @@ def send(text: str, dry_run: bool = False) -> None:
             res = json.load(r)
             if not res.get("ok"):
                 raise RuntimeError(f"Telegram lỗi: {res}")
+            ids.append(res["result"]["message_id"])
+    return ids

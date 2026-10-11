@@ -3,7 +3,10 @@ from datetime import datetime
 from html import escape
 from itertools import groupby
 
+from . import gold
 from .rules import LEVEL_ICON
+
+DISCLAIMER = "<i>⚠️ Nhận định tham khảo, không phải khuyến nghị đầu tư.</i>"
 
 WEEKDAYS = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
 LEGEND = "<i>🔥 Cực mạnh · 🔴 Cao · 🟠 Trung bình — giờ Việt Nam (GMT+7)</i>"
@@ -80,7 +83,7 @@ def remind(group, minutes, tz, cfg) -> str:
     return f"{head}\n\n{body}\n\n⚠️ Cẩn trọng biến động mạnh, giãn spread.{_footer(cfg)}"
 
 
-def actual(group, tz, cfg) -> str:
+def actual(group, tz, cfg, gold_rx=None, analysis=None) -> str:
     t = _dt(group[0], tz).strftime("%H:%M")
     head = f"📊 <b>KẾT QUẢ TIN {t}</b>"
     rows = []
@@ -95,10 +98,23 @@ def actual(group, tz, cfg) -> str:
         if nums:
             row += f"\n      <i>{nums}</i>"
         rows.append(row)
-    usd = all(e["currency"] == "USD" for e in group)
-    hint = ""
-    if usd and score > 0:
-        hint = "\n\n💵 Nhìn chung <b>tích cực cho USD</b> → thường gây áp lực lên vàng."
-    elif usd and score < 0:
-        hint = "\n\n💵 Nhìn chung <b>tiêu cực cho USD</b> → thường hỗ trợ vàng."
-    return f"{head}\n\n" + "\n".join(rows) + hint + _footer(cfg)
+    out = f"{head}\n\n" + "\n".join(rows)
+    if gold_rx:
+        out += "\n\n" + gold.fmt(gold_rx)
+    if analysis:
+        out += f"\n\n🧠 <b>Phân tích tác động lên vàng</b>\n{analysis}"
+    else:  # dự phòng khi không có AI: nhận định theo quy tắc
+        usd = all(e["currency"] == "USD" for e in group)
+        if usd and score > 0:
+            out += "\n\n💵 Nhìn chung <b>tích cực cho USD</b> → thường gây áp lực lên vàng."
+        elif usd and score < 0:
+            out += "\n\n💵 Nhìn chung <b>tiêu cực cho USD</b> → thường hỗ trợ vàng."
+    if analysis or score:
+        out += "\n\n" + DISCLAIMER
+    return out + _footer(cfg)
+
+
+def followup(group, tz, gold_rx) -> str:
+    t = _dt(group[0], tz).strftime("%H:%M")
+    names = ", ".join(escape(e["vi"] or e["name"]) for e in group[:3])
+    return f"⏱ <b>Vàng {gold_rx['minutes']} phút sau tin {t}</b> ({names})\n\n{gold.fmt(gold_rx)}"
