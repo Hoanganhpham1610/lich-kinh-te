@@ -1,0 +1,83 @@
+{
+  "timezone": "Asia/Ho_Chi_Minh",
+
+  "watch_currencies": ["USD"],
+  "watch_keywords": ["OPEC", "Crude Oil", "Natural Gas", "Gold"],
+
+  "always_top": [
+    "Non-Farm Employment Change",
+    "CPI m/m",
+    "Core CPI m/m",
+    "Federal Funds Rate",
+    "FOMC Statement",
+    "FOMC Press Conference",
+    "Fed Chair"
+  ],
+  "force_high": [
+    "CPI y/y",
+    "Unemployment Rate",
+    "Average Hourly Earnings",
+    "Core PCE Price Index",
+    "Advance GDP",
+    "FOMC Meeting Minutes",
+    "Core Retail Sales",
+    "Retail Sales m/m",
+    "ISM Manufacturing PMI",
+    "ISM Services PMI",
+    "JOLTS Job Openings",
+    "PPI m/m",
+    "Core PPI m/m"
+  ],
+  "force_medium": [
+    "Crude Oil Inventories",
+    "OPEC",
+    "Unemployment Claims",
+    "ADP Non-Farm Employment Change",
+    "Prelim UoM Consumer Sentiment"
+  ],
+
+  "telegram": {
+    "weekly": { "enabled": true, "weekday": 0, "hour": 7, "min_level": 2 },
+    "daily": { "enabled": true, "hour": 7, "min_level": 2 },
+    "remind": { "enabled": true, "minutes_before": 30, "min_level": 3 },
+    "actual": { "enabled": true, "min_level": 3, "max_minutes_after": 180 },
+    "footer": ""
+  },
+
+  "vi_names": {
+    "Non-Farm Employment Change": "Bảng lương phi nông nghiệp (NFP)",
+    "Unemployment Rate": "Tỷ lệ thất nghiệp",
+    "Average Hourly Earnings m/m": "Thu nhập bình quân theo giờ",
+    "CPI m/m": "Lạm phát CPI (tháng)",
+    "CPI y/y": "Lạm phát CPI (năm)",
+    "Core CPI y/y": "CPI lõi (năm)",
+    "Core CPI m/m": "CPI lõi (tháng)",
+    "PPI m/m": "Chỉ số giá sản xuất PPI",
+    "Core PPI m/m": "PPI lõi",
+    "Core PCE Price Index m/m": "PCE lõi (thước đo lạm phát của Fed)",
+    "Fed Chair": "Chủ tịch Fed phát biểu",
+    "Federal Funds Rate": "Quyết định lãi suất Fed",
+    "FOMC Statement": "Tuyên bố chính sách FOMC",
+    "FOMC Press Conference": "Họp báo FOMC",
+    "FOMC Meeting Minutes": "Biên bản họp FOMC",
+    "Advance GDP q/q": "GDP sơ bộ (quý)",
+    "Retail Sales m/m": "Doanh số bán lẻ",
+    "Core Retail Sales m/m": "Doanh số bán lẻ lõi",
+    "ISM Manufacturing PMI": "PMI sản xuất ISM",
+    "ISM Services PMI": "PMI dịch vụ ISM",
+    "JOLTS Job Openings": "Số việc làm trống JOLTS",
+    "Unemployment Claims": "Đơn xin trợ cấp thất nghiệp",
+    "Philly Fed Manufacturing Index": "Chỉ số sản xuất Philly Fed",
+    "Empire State Manufacturing Index": "Chỉ số sản xuất Empire State",
+    "Existing Home Sales": "Doanh số nhà cũ",
+    "Prelim GDP q/q": "GDP sơ bộ lần 2 (quý)",
+    "Final GDP q/q": "GDP chính thức (quý)",
+    "Core PCE Price Index y/y": "PCE lõi (năm)",
+    "Durable Goods Orders m/m": "Đơn hàng lâu bền",
+    "ADP Non-Farm Employment Change": "Việc làm ADP",
+    "Crude Oil Inventories": "Tồn kho dầu thô EIA",
+    "Natural Gas Storage": "Tồn kho khí đốt",
+    "Prelim UoM Consumer Sentiment": "Niềm tin tiêu dùng UoM",
+    "Bank Holiday": "Nghỉ lễ ngân hàng"
+  }
+}

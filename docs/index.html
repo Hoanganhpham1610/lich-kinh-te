@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lịch Kinh Tế</title>
+<meta name="description" content="Lịch tin kinh tế theo giờ Việt Nam, đánh dấu mức độ quan trọng">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+<style>
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --surface-2:#f0f2f5; --border:#e3e6eb;
+  --text:#14171c; --muted:#646b77; --faint:#9aa1ac;
+  --accent:#2457d6;
+  --l4:#d6336c; --l4-bg:#fde8ef;
+  --l3:#e03131; --l3-bg:#fdecec;
+  --l2:#e8590c; --l2-bg:#fff0e6;
+  --l1:#c99a06; --l1-bg:#fff8db;
+  --l0:#9aa1ac; --l0-bg:#f0f2f5;
+  --good:#2b8a3e; --bad:#e03131;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1115; --surface:#171a20; --surface-2:#1f232b; --border:#2a2f39;
+    --text:#e8eaee; --muted:#9aa1ac; --faint:#646b77; --accent:#6c95ff;
+    --l4:#f06595; --l4-bg:#3a1a27; --l3:#ff6b6b; --l3-bg:#3a1c1c;
+    --l2:#ff922b; --l2-bg:#3a2516; --l1:#fcc419; --l1-bg:#352d10; --l0:#646b77; --l0-bg:#1f232b;
+    --good:#51cf66; --bad:#ff6b6b; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a20; --surface-2:#1f232b; --border:#2a2f39;
+  --text:#e8eaee; --muted:#9aa1ac; --faint:#646b77; --accent:#6c95ff;
+  --l4:#f06595; --l4-bg:#3a1a27; --l3:#ff6b6b; --l3-bg:#3a1c1c;
+  --l2:#ff922b; --l2-bg:#3a2516; --l1:#fcc419; --l1-bg:#352d10; --l0:#646b77; --l0-bg:#1f232b;
+  --good:#51cf66; --bad:#ff6b6b; --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{font-size:22px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+.icon-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:16px;flex:none}
+
+.hero{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.next-label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.next-name{font-size:18px;font-weight:650;margin-bottom:2px}
+.next-vi{color:var(--muted);font-size:14px;margin-bottom:10px}
+.countdown{font-variant-numeric:tabular-nums;font-size:30px;font-weight:700;letter-spacing:-.02em}
+.countdown small{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:100%}
+.stat{border-radius:10px;padding:10px;display:flex;flex-direction:column;justify-content:center}
+.stat b{font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;color:var(--muted);padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer;opacity:.55}
+.chip[aria-pressed="true"]{opacity:1;color:var(--text);border-color:currentColor}
+input[type=search]{flex:1;min-width:160px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:9px;padding:7px 11px;font:inherit;font-size:14px}
+
+.day{margin-bottom:18px}
+.day-head{display:flex;align-items:center;gap:8px;font-weight:650;font-size:14px;margin:0 0 6px 2px;color:var(--muted)}
+.day-head.today{color:var(--accent)}
+.badge{font-size:11px;padding:2px 7px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600}
+.list{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.row{display:grid;grid-template-columns:58px 44px 1fr 86px 86px 86px 34px;gap:8px;align-items:center;padding:9px 12px 9px 9px;border-top:1px solid var(--border);border-left:4px solid transparent}
+.row:first-child{border-top:0}
+.row.head{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);padding-top:7px;padding-bottom:7px;background:var(--surface-2)}
+.row.lv4{border-left-color:var(--l4);background:linear-gradient(90deg,var(--l4-bg),transparent 40%)}
+.row.lv3{border-left-color:var(--l3)}
+.row.lv2{border-left-color:var(--l2)}
+.row.lv1{border-left-color:var(--l1)}
+.row.lv0{border-left-color:var(--l0)}
+.row.past{opacity:.6}
+.row.soon{box-shadow:inset 0 0 0 2px var(--accent)}
+.time{font-variant-numeric:tabular-nums;font-weight:600}
+.cur{font-size:12px;font-weight:700;color:var(--muted)}
+.name{min-width:0}
+.name .en{font-weight:550;overflow-wrap:anywhere}
+.name .vi{font-size:12.5px;color:var(--muted)}
+.lvl{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.lvl4{color:var(--l4);background:var(--l4-bg)}.lvl3{color:var(--l3);background:var(--l3-bg)}
+.lvl2{color:var(--l2);background:var(--l2-bg)}.lvl1{color:var(--l1);background:var(--l1-bg)}.lvl0{color:var(--l0);background:var(--l0-bg)}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-size:14px}
+.num.act{font-weight:700}
+.num.good{color:var(--good)}.num.bad{color:var(--bad)}
+.num .k{display:none}
+.star{border:0;background:none;cursor:pointer;font-size:18px;color:var(--faint);padding:0;line-height:1}
+.star.on{color:#f5b301}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+footer{color:var(--faint);font-size:12px;margin-top:24px;text-align:center}
+footer a{color:inherit}
+
+@media (max-width:720px){
+  .hero{grid-template-columns:1fr}
+  .filters{position:static}
+  .row.head{display:none}
+  .row{grid-template-columns:52px 1fr 30px;grid-template-areas:"time name star" "cur nums nums";row-gap:4px}
+  .time{grid-area:time}.cur{grid-area:cur}.name{grid-area:name}.star{grid-area:star}
+  .nums{grid-area:nums;display:flex;gap:14px;justify-content:flex-start}
+  .num{text-align:left;font-size:13px}
+  .num .k{display:inline;color:var(--faint);font-weight:400;margin-right:3px}
+  .num:empty{display:none}
+}
+@media (min-width:721px){ .nums{display:contents} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>📅 Lịch Kinh Tế</h1>
+      <div class="sub" id="sub">Đang tải…</div>
+    </div>
+    <button class="icon-btn" id="theme" title="Đổi giao diện sáng/tối" aria-label="Đổi giao diện">◐</button>
+  </header>
+
+  <section class="hero">
+    <div class="card" id="next"></div>
+    <div class="card"><div class="stats" id="stats"></div></div>
+  </section>
+
+  <div class="filters">
+    <div class="seg" role="group" aria-label="Phạm vi">
+      <button data-scope="watch" aria-pressed="true">Đang theo dõi</button>
+      <button data-scope="all" aria-pressed="false">Tất cả</button>
+      <button data-scope="star" aria-pressed="false">⭐ Đã đánh dấu</button>
+    </div>
+    <span id="chips"></span>
+    <input type="search" id="q" placeholder="Tìm tin… (CPI, NFP, Fed)">
+  </div>
+
+  <main id="cal"></main>
+  <footer>Nguồn dữ liệu: <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noopener">ForexFactory</a> · Giờ Việt Nam (GMT+7) · Tự cập nhật mỗi 2 phút</footer>
+</div>
+
+<script>
+const TZ = "Asia/Ho_Chi_Minh";
+const LV = {4:["🔥","Cực mạnh"],3:["🔴","Cao"],2:["🟠","TB"],1:["🟡","Thấp"],0:["⚪","Lễ"]};
+const WD = ["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"];
+const fmtTime = new Intl.DateTimeFormat("vi-VN",{timeZone:TZ,hour:"2-digit",minute:"2-digit",hour12:false});
+const fmtDay = new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"});
+const fmtWd = new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"short"});
+const WDI = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch{ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch{} }
+};
+let data = null;
+let ui = store.get("ui",{scope:"watch",levels:[4,3,2]});
+let stars = new Set(store.get("stars",[]));
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Theme
+const applyTheme = t => { if(t) document.documentElement.dataset.theme=t; else delete document.documentElement.dataset.theme; };
+applyTheme(store.get("theme",null));
+$("#theme").onclick = () => {
+  const dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  const t = dark ? "light" : "dark"; applyTheme(t); store.set("theme",t);
+};
+
+// Filters
+document.querySelectorAll("[data-scope]").forEach(b => b.onclick = () => { ui.scope=b.dataset.scope; save(); render(); });
+$("#chips").innerHTML = [4,3,2,1,0].map(l=>`<button class="chip lvl${l}" data-lv="${l}" style="background:none">${LV[l][0]} ${LV[l][1]}</button>`).join(" ");
+document.querySelectorAll("[data-lv]").forEach(b => b.onclick = () => {
+  const l=+b.dataset.lv; ui.levels = ui.levels.includes(l) ? ui.levels.filter(x=>x!==l) : [...ui.levels,l]; save(); render();
+});
+$("#q").oninput = render;
+function save(){ store.set("ui",ui); }
+
+function visible(e){
+  if(ui.scope==="watch" && !e.watch) return false;
+  if(ui.scope==="star" && !stars.has(e.key)) return false;
+  if(!ui.levels.includes(e.level)) return false;
+  const q=$("#q").value.trim().toLowerCase();
+  if(q && !(e.name+" "+e.vi+" "+e.currency).toLowerCase().includes(q)) return false;
+  return true;
+}
+
+function numCls(e){ return e.better_worse===1?"good":e.better_worse===2?"bad":""; }
+
+function render(){
+  document.querySelectorAll("[data-scope]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.scope===ui.scope));
+  document.querySelectorAll("[data-lv]").forEach(b=>b.setAttribute("aria-pressed",ui.levels.includes(+b.dataset.lv)));
+  if(!data) return;
+  const now = Date.now()/1000;
+  const today = fmtDay.format(new Date());
+  const evs = data.events.filter(visible);
+  if(!evs.length){ $("#cal").innerHTML=`<div class="card empty">Không có tin nào khớp bộ lọc.</div>`; return; }
+  const days = new Map();
+  for(const e of evs){ const d=fmtDay.format(new Date(e.ts*1000)); if(!days.has(d)) days.set(d,[]); days.get(d).push(e); }
+  let html="";
+  for(const [d,items] of days){
+    const dt=new Date(items[0].ts*1000);
+    const [y,m,dd]=d.split("-");
+    html+=`<section class="day"><div class="day-head ${d===today?"today":""}">${WD[WDI[fmtWd.format(dt)]]} ${dd}/${m}${d===today?' <span class="badge">Hôm nay</span>':""}</div><div class="list">
+      <div class="row head"><span>Giờ</span><span>Tiền</span><span>Sự kiện</span><span class="num">Thực tế</span><span class="num">Dự báo</span><span class="num">Trước</span><span></span></div>`;
+    for(const e of items){
+      const past = e.ts < now - 60, soon = e.timed && e.ts>=now && e.ts-now<=1800;
+      html+=`<div class="row lv${e.level} ${past?"past":""} ${soon?"soon":""}">
+        <span class="time">${e.timed?fmtTime.format(new Date(e.ts*1000)):esc(e.time_label||"Cả ngày")}</span>
+        <span class="cur">${esc(e.currency)}</span>
+        <span class="name"><span class="en"><span class="lvl lvl${e.level}">${LV[e.level][0]} ${LV[e.level][1]}</span>${e.url?`<a href="${esc(e.url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${esc(e.name)}</a>`:esc(e.name)}</span>${e.vi?`<div class="vi">${esc(e.vi)}</div>`:""}</span>
+        <span class="nums"><span class="num act ${numCls(e)}">${e.actual?`<span class="k">TT</span>${esc(e.actual)}`:""}</span><span class="num">${e.forecast?`<span class="k">DB</span>${esc(e.forecast)}`:""}</span><span class="num" style="color:var(--muted)">${e.previous?`<span class="k">Trước</span>${esc(e.previous)}`:""}</span></span>
+        <button class="star ${stars.has(e.key)?"on":""}" data-key="${esc(e.key)}" title="Đánh dấu" aria-label="Đánh dấu">${stars.has(e.key)?"★":"☆"}</button>
+      </div>`;
+    }
+    html+="</div></section>";
+  }
+  $("#cal").innerHTML=html;
+  document.querySelectorAll(".star").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.key; stars.has(k)?stars.delete(k):stars.add(k); store.set("stars",[...stars]); render(); renderHero();
+  });
+}
+
+function renderHero(){
+  if(!data) return;
+  const now=Date.now()/1000;
+  const pool=data.events.filter(e=>e.watch && e.timed && e.ts>now && (e.level>=3 || stars.has(e.key)));
+  const nx=pool[0];
+  if(!nx){ $("#next").innerHTML=`<div class="next-label">Tin quan trọng tiếp theo</div><div class="next-name">Chưa có tin quan trọng sắp tới</div>`; }
+  else{
+    const same=pool.filter(e=>e.ts===nx.ts);
+    const left=nx.ts-now, h=Math.floor(left/3600), m=Math.floor(left%3600/60), s=Math.floor(left%60);
+    const d=Math.floor(h/24);
+    const cd = d>0 ? `${d}<small>ngày</small> ${h%24}<small>giờ</small>` : `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    const dt=new Date(nx.ts*1000);
+    $("#next").innerHTML=`<div class="next-label">Tin quan trọng tiếp theo · ${WD[WDI[fmtWd.format(dt)]]} ${fmtTime.format(dt)}</div>
+      <div class="next-name">${LV[nx.level][0]} ${esc(nx.currency)} ${esc(nx.name)}${same.length>1?` <span style="color:var(--muted);font-weight:500">+${same.length-1} tin cùng giờ</span>`:""}</div>
+      <div class="next-vi">${esc(nx.vi||"")}${nx.forecast?` · Dự báo ${esc(nx.forecast)}`:""}${nx.previous?` · Trước ${esc(nx.previous)}`:""}</div>
+      <div class="countdown">${cd}</div>`;
+  }
+  const upcoming=data.events.filter(e=>e.watch && e.ts>now);
+  const cnt=l=>upcoming.filter(e=>e.level===l).length;
+  $("#stats").innerHTML=[[4,"Cực mạnh"],[3,"Cao"],[2,"Trung bình"]].map(([l,t])=>`<div class="stat" style="background:var(--l${l}-bg);color:var(--l${l})"><b>${cnt(l)}</b><span>${LV[l][0]} ${t}</span></div>`).join("")
+}
+
+async function load(){
+  try{
+    const r=await fetch("data.json?t="+Date.now(),{cache:"no-store"});
+    data=await r.json();
+    const up=new Date(data.updated*1000);
+    $("#sub").textContent=`Giờ Việt Nam · Theo dõi: ${data.watch_currencies.join(", ")} + Vàng/Dầu · Cập nhật ${fmtTime.format(up)} ${fmtDay.format(up).split("-").reverse().slice(0,2).join("/")}`;
+    render(); renderHero();
+  }catch(err){ $("#sub").textContent="Không tải được dữ liệu ("+err.message+")"; }
+}
+load();
+setInterval(load,120000);
+setInterval(renderHero,1000);
+</script>
+</body>
+</html>

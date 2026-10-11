@@ -1,0 +1,45 @@
+name: Lich kinh te
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # mỗi 5 phút (GitHub có thể trễ vài phút)
+  workflow_dispatch:         # cho phép bấm chạy tay / gọi từ cron-job.org
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Chạy bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: python main.py tick
+
+      - name: Lưu trạng thái + dữ liệu dashboard
+        if: always()
+        run: |
+          git config user.name "econ-calendar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add state docs/data.json
+          if ! git diff --cached --quiet; then
+            git commit -m "cập nhật lịch $(date -u +%FT%TZ)"
+            git pull --rebase -X ours && git push
+          fi
