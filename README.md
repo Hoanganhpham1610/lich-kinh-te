@@ -10,7 +10,7 @@ Tự động lấy lịch tin kinh tế từ ForexFactory, chấm mức quan tr�
   | ☀️ Lịch trong ngày | 07:00 thứ Hai–Sáu (gồm cả tin đêm như FOMC 01:00) |
   | ⏰ Nhắc trước | 30 phút trước tin 🔴/🔥 |
   | 📊 Kết quả actual | Ngay khi ForexFactory cập nhật số thực tế, kèm **giá vàng trước/sau tin** và **phân tích tác động lên vàng bằng AI (Claude)** |
-| ⏱ Cập nhật vàng | 30 phút sau tin (trả lời vào tin kết quả) |
+  | ⏱ Cập nhật vàng | 30 phút sau tin (trả lời vào tin kết quả) |
 
 ## Mức quan trọng
 
