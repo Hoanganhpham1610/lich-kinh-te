@@ -1,5 +1,10 @@
 {
- "gold": [],
+ "gold": [
+  [
+   1792066845,
+   4151.899902
+  ]
+ ],
  "sent": {
   "daily:2026-10-12": 1791767882,
   "daily:2026-10-13": 1791863289,
@@ -9,6 +14,10 @@
   "remind:USD|CPI y/y|1791981000": 1791980870,
   "remind:USD|Core CPI m/m|1791981000": 1791980870,
   "remind:USD|Core CPI y/y|1791981000": 1791980870,
+  "remind:USD|Core PPI m/m|1792067400": 1792066846,
+  "remind:USD|Core Retail Sales m/m|1792067400": 1792066846,
+  "remind:USD|PPI m/m|1792067400": 1792066846,
+  "remind:USD|Retail Sales m/m|1792067400": 1792066846,
   "weekly:2026-W42": 1791767881
  }
 }
