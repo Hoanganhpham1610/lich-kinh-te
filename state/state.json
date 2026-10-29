@@ -1,7 +1,24 @@
 {
- "followups": {},
- "gold": [],
+ "followups": {
+  "1793277000": {
+   "keys": [
+    "USD|Advance GDP q/q|1793277000",
+    "USD|Core PCE Price Index m/m|1793277000",
+    "USD|Advance GDP Price Index q/q|1793277000"
+   ],
+   "msg": 25
+  }
+ },
+ "gold": [
+  [
+   1793278345,
+   4021.0
+  ]
+ ],
  "sent": {
+  "actual:USD|Advance GDP Price Index q/q|1793277000": 1793278347,
+  "actual:USD|Advance GDP q/q|1793277000": 1793278347,
+  "actual:USD|Core PCE Price Index m/m|1793277000": 1793278347,
   "actual:USD|Federal Funds Rate|1793210400": 1793219418,
   "daily:2026-10-16": 1792113571,
   "daily:2026-10-19": 1792373158,
@@ -13,10 +30,6 @@
   "daily:2026-10-27": 1793067926,
   "daily:2026-10-28": 1793153735,
   "daily:2026-10-29": 1793233188,
-  "remind:USD|Core PPI m/m|1792067400": 1792066846,
-  "remind:USD|Core Retail Sales m/m|1792067400": 1792066846,
-  "remind:USD|PPI m/m|1792067400": 1792066846,
-  "remind:USD|Retail Sales m/m|1792067400": 1792066846,
   "weekly:2026-W43": 1792373158,
   "weekly:2026-W44": 1792979152
  }
