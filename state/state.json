@@ -1,18 +1,13 @@
 {
- "followups": {
-  "1793277000": {
-   "keys": [
-    "USD|Advance GDP q/q|1793277000",
-    "USD|Core PCE Price Index m/m|1793277000",
-    "USD|Advance GDP Price Index q/q|1793277000"
-   ],
-   "msg": 25
-  }
- },
+ "followups": {},
  "gold": [
   [
    1793278345,
    4021.0
+  ],
+  [
+   1793299453,
+   4010.300049
   ]
  ],
  "sent": {
