@@ -1,6 +1,11 @@
 {
  "followups": {},
- "gold": [],
+ "gold": [
+  [
+   1794851392,
+   3861.5
+  ]
+ ],
  "sent": {
   "actual:USD|ISM Services PMI|1793804400": 1793812238,
   "actual:USD|JOLTS Job Openings|1793718000": 1793723811,
